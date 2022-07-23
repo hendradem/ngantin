@@ -257,7 +257,7 @@ function ProductAdd() {
               Place your product in the display box
             </p>
 
-            <NavLink to="/profile" class="w-full">
+            <NavLink to="/profile/product" class="w-full">
               <button
                 class="text-white w-full mt-7 bg-gray-900 hover:bg-gray-800 font-medium rounded-lg text-sm px-5 py-3 focus:outline-none"
                 type="button"
