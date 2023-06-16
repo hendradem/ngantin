@@ -14,7 +14,16 @@ function FoodPage() {
 
   useEffect(() => {
     axios
-      .get(`${url}/products`)
+      .get(`${url}/products`, {
+        method: "GET",
+        mode: "no-cors",
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+        credentials: "same-origin",
+      })
       .then(function (res) {
         setFoods(res.data.message);
         setIsLoading(false);
