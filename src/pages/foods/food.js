@@ -14,15 +14,13 @@ function FoodPage() {
 
   useEffect(() => {
     axios
-      .get(`${url}/products`, {
-        method: "GET",
-        mode: "no-cors",
+      .post(`${url}/products`, {
+        method: "post",
         headers: {
           "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json",
+          "Access-Control-Allow-Methods": "POST, GET, PUT",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
         },
-        withCredentials: true,
-        credentials: "same-origin",
       })
       .then(function (res) {
         setFoods(res.data.message);
