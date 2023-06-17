@@ -23,7 +23,18 @@ export const signUp = (user) => {
 export const signIn = (email, password) => {
   return (dispatch) => {
     axios
-      .post(`${url}/login`, { email, password })
+      .post(
+        `${url}/login`,
+        {
+          method: "post",
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, GET, PUT",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          },
+        },
+        { email, password }
+      )
       .then((res) => {
         localStorage.setItem("token", res.data.token);
 
