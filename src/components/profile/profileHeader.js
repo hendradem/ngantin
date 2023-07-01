@@ -68,7 +68,7 @@ function ProfileHeader() {
             </li>
             <li>
               <button class="inline-flex p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 ">
-                Settings
+                Wishlists
               </button>
             </li>
           </ul>

@@ -1,9 +1,8 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signIn } from "../../../store/actions/authActions";
 import loginIllustration from "../../../assets/images/illustration/login.png";
-import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
@@ -21,28 +20,6 @@ function Login() {
   };
 
   if (auth.name) navigate("/", { replace: true });
-
-  useEffect(() => {
-    const config = {
-      method: "post",
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, GET, PUT",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      },
-    };
-
-    axios
-      .get("https://8628-36-73-62-117.ngrok-free.app/test", config)
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-
-    console.log(123123213);
-  }, []);
 
   return (
     <div class="w-full flex justify-center max-w-sm p-10 bg-white overflow-y-auto">

@@ -1,8 +1,33 @@
-export default function ImageCarousel(){
-    return(
-        <div>
-            <img style={{ width: "100%", height: "150px", borderRadius: "5px", objectFit: "cover" }} src="https://images.unsplash.com/photo-1608409303784-6a209ada22e1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MzV8fGZvb2QlMjBtZW51fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=400&q=60" />
-        </div>
-    )
-}
- 
+import React from "react";
+import { Carousel } from "flowbite-react";
+
+const ImageCarousel = () => {
+  return (
+    <div className="pt-[60px] w-full h-[300px]">
+      <Carousel>
+        <img
+          alt="..."
+          src="https://flowbite.com/docs/images/carousel/carousel-1.svg"
+        />
+        <img
+          alt="..."
+          src="https://flowbite.com/docs/images/carousel/carousel-2.svg"
+        />
+        <img
+          alt="..."
+          src="https://flowbite.com/docs/images/carousel/carousel-3.svg"
+        />
+        <img
+          alt="..."
+          src="https://flowbite.com/docs/images/carousel/carousel-4.svg"
+        />
+        <img
+          alt="..."
+          src="https://flowbite.com/docs/images/carousel/carousel-5.svg"
+        />
+      </Carousel>
+    </div>
+  );
+};
+
+export default ImageCarousel;

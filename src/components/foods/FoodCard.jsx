@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react"; 
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 import { RiHeart3Line, RiShoppingCart2Line } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../store/actions/productActions";
 
-export default function FoodCard(props) { 
+export default function FoodCard(props) {
   const [selectedItem, setSelectedItem] = useState([]);
   const dispatch = useDispatch();
 
@@ -19,18 +20,22 @@ export default function FoodCard(props) {
       cartData[findProductIndex].qty++;
     } else {
       cartData.push(item);
-    } 
+    }
     dispatch(addToCart(cartData));
-  }; 
+    toast("Product added", {
+      duration: 700,
+      position: "bottom-center",
+      icon: "😊",
+    });
+  };
 
   return (
     <div>
-      <div class="grid grid-cols-2 gap-2"> 
-
+      <div class="grid grid-cols-2 gap-2">
         {props.data.map((item) => {
           return (
             <div
-              class="max-w-sm bg-white rounded-md border border-gray-100 relative"
+              class="max-w-sm bg-white mt-[10px] rounded-md border border-gray-100 relative"
               onClick={() => {
                 handleClick(item);
               }}

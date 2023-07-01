@@ -12,6 +12,8 @@ import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
 import { NavLink } from "react-router-dom";
 
+import { toast } from "react-hot-toast";
+
 function ProductAdd() {
   const auth = useSelector((state) => state.auth);
   const [isDiscount, setIsDiscount] = useState(false);
@@ -59,6 +61,10 @@ function ProductAdd() {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setImgUrl(downloadURL);
+          toast.success("Image uploaded", {
+            duration: 700,
+            position: "bottom-center",
+          });
         });
       }
     );
@@ -80,6 +86,10 @@ function ProductAdd() {
     axios
       .post(`${url}/addProduct`, itemData)
       .then((res) => {
+        toast.success("Product added", {
+          duration: 1200,
+          position: "bottom-center",
+        });
         if (res.data.message) setSuccessAddProduct(true);
       })
       .catch((error) => {

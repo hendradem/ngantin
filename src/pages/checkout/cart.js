@@ -15,7 +15,7 @@ import emptyIllustration from "../../assets/images/illustration/notfound.png";
 const paymentOptions = [
   {
     id: "cash",
-    name: "Cash",
+    name: "Cash / QRIS",
     icon: "https://firebasestorage.googleapis.com/v0/b/canteen-4d03f.appspot.com/o/bank%20logo%2Ficon.png?alt=media&token=36214437-19fc-4a87-89ab-16d796cad1c3",
     popular: true,
   },

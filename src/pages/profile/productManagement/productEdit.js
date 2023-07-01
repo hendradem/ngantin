@@ -12,6 +12,8 @@ import axios from "axios";
 import { NavLink, useParams } from "react-router-dom";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
+import { toast } from "react-hot-toast";
+
 function ProductEdit() {
   const auth = useSelector((state) => state.auth);
   const [product, setProduct] = useState([]);
@@ -36,9 +38,7 @@ function ProductEdit() {
 
   let { id } = useParams();
 
-  const onChangeDiscountToggle = (e) => {
-    console.log(e.target.value);
-  };
+  const onChangeDiscountToggle = (e) => {};
   const onSelectCategory = (e) => {
     setProductCategory(e.target.value);
   };
@@ -61,6 +61,10 @@ function ProductEdit() {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          toast.success("Image uploaded", {
+            duration: 700,
+            position: "bottom-center",
+          });
           setImgUrl(downloadURL);
           setIsImageEdited(true);
         });
@@ -84,6 +88,10 @@ function ProductEdit() {
     axios
       .put(`${url}/editProduct/${id}`, itemData)
       .then((res) => {
+        toast.success("Product updated", {
+          duration: 1200,
+          position: "bottom-center",
+        });
         if (res.data.message) setSuccessEditProduct(true);
       })
       .catch((error) => {
@@ -92,7 +100,6 @@ function ProductEdit() {
   };
 
   useEffect(() => {
-    console.log(id);
     axios
       .post(`${url}/getProductForUpdate`, {
         product_code: id,
@@ -281,7 +288,7 @@ function ProductEdit() {
               Your product has been edited
             </p>
 
-            <NavLink to="/profile" class="w-full">
+            <NavLink to="/profile/product" class="w-full">
               <button
                 class="text-white w-full mt-7 bg-gray-900 hover:bg-gray-800 font-medium rounded-lg text-sm px-5 py-3 focus:outline-none"
                 type="button"

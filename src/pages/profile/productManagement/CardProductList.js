@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { url } from "../../../api/index";
+import { toast } from "react-hot-toast";
 
 function CardProductList({ data }) {
   const auth = useSelector((state) => state.auth);
@@ -19,9 +20,18 @@ function CardProductList({ data }) {
       .delete(`${url}/product/${idProduct}/${iduser}`)
       .then((res) => {
         setProduct(res.data.message);
+        toast("Product deleted", {
+          duration: 700,
+          position: "bottom-center",
+          icon: "✅",
+        });
       })
       .catch((error) => {
         console.log(error);
+        toast.error("Error", {
+          duration: 700,
+          position: "bottom-center",
+        });
       });
   };
 
@@ -45,7 +55,7 @@ function CardProductList({ data }) {
                 Rp {item.price}
               </h6>
               <p class="text-xs font-reguler text-gray-400">
-                 Stock: {item.stock}
+                Stock: {item.stock}
               </p>
             </div>
             <div class="ml-2 flex-1 w-32 flex-grow-0 justify-end pt-1">
