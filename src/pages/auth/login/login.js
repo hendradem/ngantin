@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signIn } from "../../../store/actions/authActions";
 import loginIllustration from "../../../assets/images/illustration/login.png";
+import MainLayout from "../../../layouts/main/main";
 
 function Login() {
   const navigate = useNavigate();
@@ -22,8 +23,8 @@ function Login() {
   if (auth.name) navigate("/", { replace: true });
 
   return (
-    <div class="w-full flex justify-center max-w-sm p-10 bg-white overflow-y-auto">
-      <form class="space-y-6  flex flex-col justify-center">
+    <div class="flex justify-center w-full h-screen justify-self-center bg-white">
+      <form class="space-y-6 flex flex-col justify-center max-w-md bg-white">
         <img src={loginIllustration} class="w-[100%]" />
         <h3 class="text-xl font-medium text-center text-gray-900 dark:text-white">
           Welcome to ngantin

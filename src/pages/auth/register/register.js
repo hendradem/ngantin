@@ -38,8 +38,8 @@ const Register = () => {
   }
 
   return (
-    <div class="w-full flex justify-center max-w-sm p-10 bg-white overflow-y-auto">
-      <form class="space-y-6  flex flex-col justify-center">
+    <div class="flex justify-center w-full h-screen justify-self-center bg-white">
+      <form class="space-y-6 flex flex-col justify-center max-w-md bg-white">
         <img src={loginIllustration} class="w-[100%]" />
         {isSuccess ? (
           <div

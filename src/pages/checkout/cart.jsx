@@ -5,6 +5,8 @@ import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 import axios from "axios";
 import { url } from "../../api/index";
 
+import MainLayout from "../../layouts/main/main";
+
 import ClossableNavbar from "../../layouts/navbar/clossable_navbar";
 import Modal from "../../components/modal";
 import HeadlessModal from "../../components/headlessModal";
@@ -144,93 +146,75 @@ function CartPage() {
 
   return (
     <div>
-      <ClossableNavbar title={"Your cart"} from={"foods"} />
+      <MainLayout>
+        {/* <ClossableNavbar title={"Your cart"} from={"foods"} /> */}
+        <main class="pt-[70px]">
+          {cart.length > 0 ? (
+            cart.map((item, index) => {
+              return (
+                <div class="-mt-5">
+                  <div key={item.title} class="p-3">
+                    <div class="flex border border-gray-100 w-full rounded-md p-2 mt-1">
+                      <div style={style.imageContainer} class="flex-none">
+                        <img
+                          class="rounded-md"
+                          src={item.image}
+                          style={style.imageThumbnail}
+                        />
+                      </div>
+                      <div class="ml-3 flex-1 w-64 pt-1">
+                        <h6 class="text-gray-600 text-md font-semibold">
+                          {item.title} ({item.qty})
+                        </h6>
+                        <h6 class="text-orange-400 text-sm font-medium">
+                          Rp {item.price}
+                        </h6>
+                        <p class="text-xs font-reguler text-gray-400">
+                          Sisa: {item.stock}
+                        </p>
+                      </div>
+                      <div class="ml-2 flex-1 w-32 flex-grow-0 justify-end pt-1">
+                        <button
+                          type="button"
+                          class="px-2 py-1 w-full mb-1 text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10    "
+                        >
+                          Add
+                        </button>
 
-      <main class="pt-[70px]">
-        {cart.length > 0 ? (
-          cart.map((item, index) => {
-            return (
-              <div class="-mt-5">
-                <div key={item.title} class="p-3">
-                  <div class="flex border border-gray-100 w-full rounded-md p-2 mt-1">
-                    <div style={style.imageContainer} class="flex-none">
-                      <img
-                        class="rounded-md"
-                        src={item.image}
-                        style={style.imageThumbnail}
-                      />
-                    </div>
-                    <div class="ml-3 flex-1 w-64 pt-1">
-                      <h6 class="text-gray-600 text-md font-semibold">
-                        {item.title} ({item.qty})
-                      </h6>
-                      <h6 class="text-orange-400 text-sm font-medium">
-                        Rp {item.price}
-                      </h6>
-                      <p class="text-xs font-reguler text-gray-400">
-                        Sisa: {item.stock}
-                      </p>
-                    </div>
-                    <div class="ml-2 flex-1 w-32 flex-grow-0 justify-end pt-1">
-                      <button
-                        type="button"
-                        class="px-2 py-1 w-full mb-1 text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10    "
-                      >
-                        Add
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          removeItem(index);
-                        }}
-                        class="px-2 py-1 w-full text-xs font-medium text-center text-white bg-amber-500 rounded-md hover:bg-amber-600  focus:outline-none   "
-                      >
-                        Delete
-                      </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            removeItem(index);
+                          }}
+                          class="px-2 py-1 w-full text-xs font-medium text-center text-white bg-amber-500 rounded-md hover:bg-amber-600  focus:outline-none   "
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
+              );
+            })
+          ) : (
+            <div class="p-6 flex flex-col items-center">
+              <img src={emptyIllustration} class="mb-2 w-[70%]" />
+              <p class="text-lg font-medium text-center text-gray-800">
+                Your cart is empty
+              </p>
 
-                <div class="w-full fixed flex bottom-0 border-t border-t-gray-100 px-4 py-2">
-                  <div class="flex-1 w-32">
-                    <span class="font-reguler text-sm text-gray-400 m-0">
-                      Total price:
-                    </span>
-                    <h6 class="font-bold text-gray-600 text-md m-0 -mt-1">
-                      Rp {totalPrice}
-                    </h6>
-                  </div>
-
-                  <button
-                    class="text-white flex-1 w-64 bg-amber-500 hover:bg-amber-600 font-medium rounded-lg text-md px-5 py-2.5 mr-2focus:outline-none"
-                    type="button"
-                    onClick={() => setPaymentModal(true)}
-                  >
-                    Checkout
-                  </button>
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <div class="p-6 flex flex-col items-center">
-            <img src={emptyIllustration} class="mb-2 w-[70%]" />
-            <p class="text-lg font-medium text-center text-gray-800">
-              Your cart is empty
-            </p>
-
-            <NavLink to="/foods">
-              <button
-                class="text-white w-full mt-4 bg-gray-900 hover:bg-gray-800 font-medium rounded-lg text-sm px-5 py-3 focus:outline-none"
-                type="button"
-              >
-                Explore Foods
-              </button>
-            </NavLink>
-          </div>
-        )}
-      </main>
+              <NavLink to="/foods">
+                <button
+                  class="text-white w-full mt-4 bg-gray-900 hover:bg-gray-800 font-medium rounded-lg text-sm px-5 py-3 focus:outline-none"
+                  type="button"
+                >
+                  Explore Foods
+                </button>
+              </NavLink>
+            </div>
+          )}
+        </main>
+      </MainLayout>
 
       {/* modal */}
       {paymentModal && (
