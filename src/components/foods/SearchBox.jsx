@@ -11,7 +11,7 @@ export default function SearchBox() {
 
   return (
     <div>
-      <div class="relative mb-2 mt-12">
+      <div class="relative mb-2 mt-2">
         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
           {isClicked ? <RiArrowLeftLine /> : <RiSearchLine />}
         </div>
