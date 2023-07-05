@@ -113,7 +113,6 @@ function CartPage() {
       axios
         .post(`${url}/transaction`, transactionData)
         .then((res) => {
-          // console.log(res);
           if (res.data.message === "success") {
             calculateCharge();
             setSuccessModal(true);
@@ -147,8 +146,7 @@ function CartPage() {
   return (
     <div>
       <MainLayout>
-        {/* <ClossableNavbar title={"Your cart"} from={"foods"} /> */}
-        <main class="pt-[70px]">
+        <main class="pt-[30px]">
           {cart.length > 0 ? (
             cart.map((item, index) => {
               return (
@@ -211,6 +209,27 @@ function CartPage() {
                   Explore Foods
                 </button>
               </NavLink>
+            </div>
+          )}
+
+          {cart.length > 0 && (
+            <div class="w-full flex border-t-gray-100 px-4 py-2">
+              <div class="flex-1 w-32">
+                <span class="font-reguler text-sm text-gray-400 m-0">
+                  Total price:
+                </span>
+                <h6 class="font-bold text-gray-600 text-md m-0 -mt-1">
+                  Rp {totalPrice}
+                </h6>
+              </div>
+
+              <button
+                class="text-white flex-1 w-64 bg-amber-500 hover:bg-amber-600 font-medium rounded-lg text-md px-5 py-2.5 mr-2focus:outline-none"
+                type="button"
+                onClick={() => setPaymentModal(true)}
+              >
+                Checkout
+              </button>
             </div>
           )}
         </main>

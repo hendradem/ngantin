@@ -13,6 +13,8 @@ import RegisterPage from "./pages/auth/register/register";
 import LoginPage from "./pages/auth/login/login";
 import Payment from "./pages/checkout/payment";
 
+import Stores from "./pages/profile/stores";
+
 import CartPage from "./pages/checkout/cart";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -42,6 +44,7 @@ const App = () => {
         <Route path="/payment" element={<Payment />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/overview" element={<Overview />} />
+        <Route path="/profile/stores" element={<Stores />} />
         <Route path="/profile/product" element={<Product />} />
         <Route path="/profile/product/add" element={<ProductAdd />} />
         <Route path="/profile/product/edit/:id" element={<ProductEdit />} />

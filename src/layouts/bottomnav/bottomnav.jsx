@@ -24,9 +24,11 @@ const BottomNav = () => {
         <Tooltip content="Homepage">
           <NavLink
             to="/"
-            className={`text-gray-500 flex flex-col items-center p-1 px-2 rounded-md hover:text-gray-500 hover:bg-gray-100 ${
-              pathName === "/" ? "bg-gray-200" : ""
-            }`}
+            className={`${
+              pathName == "/"
+                ? "bg-orange-500"
+                : "text-gray-500 flex flex-col items-center p-1 px-2 rounded-md hover:text-gray-500 hover:bg-gray-100"
+            } `}
           >
             <RiHomeSmile2Fill size={24} />
             <span className="text-[13px] font-semibold">home</span>

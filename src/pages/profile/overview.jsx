@@ -24,7 +24,7 @@ function Overview() {
 
   return (
     <MainLayout navTitle="Profile">
-      <div class="pt-12 max-w-sm bg-white">
+      <div class="max-w-md bg-white">
         <ProfileHeader />
         <main class="w-full p-4">
           <ul class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
