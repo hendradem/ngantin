@@ -14,8 +14,11 @@ import LoginPage from "./pages/auth/login/login";
 import Payment from "./pages/checkout/payment";
 
 import Stores from "./pages/profile/stores";
-
 import CartPage from "./pages/checkout/cart";
+
+import AdminPage from "./pages/admin/index";
+import ProductsAdmin from "./pages/admin/products";
+import Transactions from "./pages/admin/transactions";
 
 import { useDispatch, useSelector } from "react-redux";
 import { loadUser } from "./store/actions/authActions";
@@ -48,6 +51,9 @@ const App = () => {
         <Route path="/profile/product" element={<Product />} />
         <Route path="/profile/product/add" element={<ProductAdd />} />
         <Route path="/profile/product/edit/:id" element={<ProductEdit />} />
+        <Route path="/profile/admin" element={<AdminPage />} />
+        <Route path="/profile/admin/products" element={<ProductsAdmin />} />
+        <Route path="/profile/admin/transactions" element={<Transactions />} />
         <Route path="/auth/register" element={<RegisterPage />} />
         <Route path="/auth/login" element={<LoginPage />} />
       </Routes>
