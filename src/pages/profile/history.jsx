@@ -7,14 +7,15 @@ import { url } from "../../api";
 import { RiStore2Fill } from "react-icons/ri";
 import StoreBottomSheet from "../../components/partials/storeBottomSheet";
 import Skeleton from "react-loading-skeleton";
-import { MdFullscreen } from "react-icons/md";
-import { NavLink } from "react-router-dom";
+import { HiChartPie } from "react-icons/hi";
 
-function Stores() {
+function History() {
   const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [stores, setStores] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [activateStore, setActivateStore] = useState(false);
 
   const onBottomSheetClose = () => {
     setOpen(false);
@@ -25,7 +26,14 @@ function Stores() {
   const renderSkeletonLoading = () => {
     return (
       <div className="mt-3">
-        <Skeleton height={55} className="w-full h-full m-0 border-radius-lg" />
+        <Skeleton
+          height={55}
+          className="w-full h-full m-0 border-radius-lg max-w-sm"
+        />
+        <Skeleton
+          height={55}
+          className="w-full h-full m-0 border-radius-lg max-w-sm"
+        />
       </div>
     );
   };
@@ -74,7 +82,7 @@ function Stores() {
                   {stores.length >= 1 && (
                     <div className="flex items-center justify-between mb-1">
                       <h5 className="text-md font-semibold leading-none text-gray-700 dark:text-white">
-                        Your stores
+                        Your buying histories
                       </h5>
                     </div>
                   )}
@@ -103,14 +111,12 @@ function Stores() {
                                   </p>
                                 </div>
                                 <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                  <NavLink to="/profile/admin">
-                                    <button
-                                      type="button"
-                                      className="px-2 py-2 mr-2 text-sm font-medium text-center inline-flex items-center text-gray-700 bg-gray-100 rounded-full hover:bg-gray-100 focus:ring-0 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                    >
-                                      <MdFullscreen size={23} />
-                                    </button>
-                                  </NavLink>
+                                  <button
+                                    type="button"
+                                    className="px-2 py-2 mr-2 text-sm font-medium text-center inline-flex items-center text-gray-700 bg-gray-100 rounded-full hover:bg-gray-100 focus:ring-0 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                  >
+                                    <HiChartPie size={23} />
+                                  </button>
                                 </div>
                               </div>
                             </li>
@@ -155,4 +161,4 @@ const style = {
   },
 };
 
-export default Stores;
+export default History;

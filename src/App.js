@@ -20,8 +20,12 @@ import AdminPage from "./pages/admin/index";
 import ProductsAdmin from "./pages/admin/products";
 import Transactions from "./pages/admin/transactions";
 
+import History from "./pages/profile/history";
+
 import { useDispatch, useSelector } from "react-redux";
 import { loadUser } from "./store/actions/authActions";
+
+import Wishlists from "./pages/profile/wishlists";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -44,10 +48,12 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/foods" element={<FoodPage />} />
         <Route path="/cart" element={<CartPage />} />
-        <Route path="/payment" element={<Payment />} />
+        <Route path="/checkout/payment" element={<Payment />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/overview" element={<Overview />} />
         <Route path="/profile/stores" element={<Stores />} />
+        <Route path="/profile/history" element={<History />} />
+        <Route path="/profile/wishlists" element={<Wishlists />} />
         <Route path="/profile/product" element={<Product />} />
         <Route path="/profile/product/add" element={<ProductAdd />} />
         <Route path="/profile/product/edit/:id" element={<ProductEdit />} />

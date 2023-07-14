@@ -75,7 +75,7 @@ function ProductEdit() {
   const onUpdateItem = () => {
     const itemData = {
       title: productTitleInput.current.value,
-      code: productCodeInput.current.value,
+      product_code: productCodeInput.current.value,
       image: imgUrl,
       price: productPriceInput.current.value,
       stock: productStockInput.current.value,
