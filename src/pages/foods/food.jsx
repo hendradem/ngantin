@@ -14,7 +14,6 @@ import LoadingButton from "../../components/partials/loadingButton";
 function FoodPage() {
   const [foods, setFoods] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [addToWishlistLoading, setAddToWishlistLoading] = useState(false);
   const [addToCartLoading, setAddToCartLoading] = useState();
   const auth = useSelector((state) => state.auth);
 
@@ -121,7 +120,7 @@ function FoodPage() {
 
   return (
     <MainLayout navTitle="Browse foods">
-      <div class="p-2 pb-[100px]">
+      <div className="p-2 pb-[100px]">
         <SearchBox />
 
         <div className="grid grid-cols-2 gap-2">
@@ -206,14 +205,14 @@ function FoodPage() {
         </div>
 
         {isLoading && (
-          <div class="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <Skeleton
               height={220}
-              class="w-full h-full m-0 border-radius-lg max-w-sm"
+              className="w-full h-full m-0 border-radius-lg max-w-sm"
             />
             <Skeleton
               height={220}
-              class="w-full h-full m-0 border-radius-lg max-w-sm"
+              className="w-full h-full m-0 border-radius-lg max-w-sm"
             />
           </div>
         )}
@@ -221,17 +220,5 @@ function FoodPage() {
     </MainLayout>
   );
 }
-
-const style = {
-  imageContainer: {
-    width: "100%",
-    height: "180px",
-  },
-  imageThumbnail: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
-};
 
 export default FoodPage;

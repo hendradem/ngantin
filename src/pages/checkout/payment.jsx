@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import ClossableNavbar from "../../layouts/navbar/clossable_navbar";
-import { HiCash } from "react-icons/hi";
 import MainLayout from "../../layouts/main/main";
-import { HiOutlinePlus, HiTrash, HiCheck, HiEmojiHappy } from "react-icons/hi";
+import { HiCheckCircle, HiCheck, HiEmojiHappy } from "react-icons/hi";
 import { MdDocumentScanner, MdPayment } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -10,6 +8,8 @@ import axios from "axios";
 import { Modal } from "flowbite-react";
 import { url } from "../../api";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { toast } from "react-hot-toast";
+import LoadingButton from "../../components/partials/loadingButton";
 
 const paymentOptions = [
   {
@@ -32,7 +32,9 @@ function Payment() {
   const auth = useSelector((state) => state.auth);
   const [totalPrice, setTotalPrice] = useState();
   const [stores, setStores] = useState([]);
+  const [addTransactionLoading, setAddTransactionLoading] = useState(false);
   const [paymentMethodModal, setPaymentMethodModal] = useState(false);
+  const [transactionSuccess, setTransactionSuccess] = useState(false);
   const [paymentConfirmModal, setPaymentConfirmModal] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState();
 
@@ -73,6 +75,7 @@ function Payment() {
   };
 
   const handleOnCheckout = () => {
+    setAddTransactionLoading(true);
     let transactionData = [];
     cart?.map((item) => {
       let tmp = {
@@ -82,25 +85,44 @@ function Payment() {
         payment_method: selectedPaymentMethod,
         nominal_transaction: +item.price * +item.quantity,
         id_store: stores.id_store,
-        payment_status: 0,
+        payment_status: 1,
       };
 
       transactionData.push(tmp);
     });
 
-    console.log(transactionData);
+    if (transactionData.length > 0) {
+      axios
+        .post(`${url}/transaction`, transactionData)
+        .then((res) => {
+          if (res.data.message === "success") {
+            toast.success("Transaction success", {
+              duration: 1000,
+              position: "top-center",
+            });
+            deleteCartBatch();
+            setAddTransactionLoading(false);
+            setPaymentConfirmModal(false);
+            setPaymentMethodModal(false);
+            setTransactionSuccess(true);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setAddTransactionLoading(false);
+        });
+    }
+  };
 
-    // if (transactionData.length > 0) {
-    //   axios
-    //     .post(`${url}/transaction`, transactionData)
-    //     .then((res) => {
-    //       if (res.data.message === "success") {
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // }
+  const deleteCartBatch = () => {
+    axios
+      .delete(`${url}/deleteCartBatch/${auth?.email}`)
+      .then(function (res) {
+        console.log(res);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   useEffect(() => {
@@ -126,7 +148,7 @@ function Payment() {
           <ul className="flex items-center justify-between w-full">
             <li>
               <button className="cursor-default disabled flex gap-2 items-center justify-center">
-                <span className="p-2 text-sm flex items-center justify-center rounded-full bg-teal-400 text-white">
+                <span className="p-2 text-sm flex items-center justify-center rounded-full bg-green-400 text-white">
                   <HiCheck />
                 </span>
                 <span className="font-medium text-sm text-gray-700">
@@ -136,8 +158,14 @@ function Payment() {
             </li>
             <li>
               <button className="cursor-default disabled flex gap-2 items-center justify-center">
-                <span className="p-2 text-sm flex items-center justify-center rounded-full bg-gray-200 text-gray-600">
-                  <MdPayment />
+                <span
+                  className={`p-2 text-sm flex items-center justify-center rounded-full ${
+                    transactionSuccess
+                      ? "bg-green-400 text-white"
+                      : "bg-gray-200 text-gray-600"
+                  } `}
+                >
+                  {transactionSuccess ? <HiCheck /> : <MdPayment />}
                 </span>
                 <span className="font-medium text-sm text-gray-700">
                   Payment
@@ -146,7 +174,13 @@ function Payment() {
             </li>
             <li>
               <button className="cursor-default disabled flex gap-2 items-center justify-center">
-                <span className="p-2 text-sm flex items-center justify-center rounded-full bg-gray-200 text-gray-600">
+                <span
+                  className={`p-2 text-sm flex items-center justify-center rounded-full ${
+                    transactionSuccess
+                      ? "bg-green-400 text-white"
+                      : "bg-gray-200 text-gray-600"
+                  } `}
+                >
                   <HiEmojiHappy />
                 </span>
                 <span className="font-medium text-sm text-gray-700">
@@ -157,11 +191,16 @@ function Payment() {
           </ul>
         </div>
 
-        <div class="m-4">
-          <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-            Your orders
-          </label>
-          {cart?.length > 0
+        <div className="m-4">
+          {cart?.length > 0 && !transactionSuccess ? (
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+              Your orders
+            </label>
+          ) : (
+            ""
+          )}
+
+          {cart?.length > 0 && !transactionSuccess
             ? cart?.map((item, index) => {
                 return (
                   <div key={index} className="p-0 mb-2">
@@ -190,10 +229,10 @@ function Payment() {
                   </div>
                 );
               })
-            : "kosong"}
+            : ""}
         </div>
 
-        {cart?.length > 0 && (
+        {cart?.length > 0 && !transactionSuccess ? (
           <div className="w-full flex border-t-gray-100 px-4 py-2">
             <div className="flex-1 w-32">
               <span className="font-reguler text-sm text-gray-400 m-0">
@@ -214,6 +253,29 @@ function Payment() {
               Select payment
             </button>
           </div>
+        ) : (
+          ""
+        )}
+
+        {transactionSuccess ? (
+          <div className="px-4 py-2 mt-10 flex flex-col items-center justify-center">
+            <div className="p-2 rounded-full border border-green-200">
+              <HiCheckCircle className="text-[50px] text-green-400" />
+            </div>
+            <h5 className="text-gray-900 text-center font-semibold text-xl mt-3">
+              Transactions success <br /> enjoy your food
+            </h5>
+            <NavLink to="/foods">
+              <button
+                className="text-white w-auto mt-5 bg-gray-900 hover:bg-gray-800 font-medium rounded-lg text-sm px-5 py-3 focus:outline-none"
+                type="button"
+              >
+                Back to home
+              </button>
+            </NavLink>
+          </div>
+        ) : (
+          ""
         )}
 
         <Modal
@@ -225,11 +287,11 @@ function Payment() {
         >
           <Modal.Header>Payment method</Modal.Header>
           <Modal.Body>
-            <div class="p-0">
-              <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
+            <div className="p-0">
+              <p className="text-sm font-normal text-gray-500 dark:text-gray-400">
                 Select payment method to complete your transaction
               </p>
-              <div class="my-4 flex flex-row gap-2">
+              <div className="my-4 flex flex-row gap-2">
                 {paymentOptions.map((item, index) => {
                   return (
                     <div
@@ -245,10 +307,10 @@ function Payment() {
                     >
                       <div className="flex flex-row">
                         <img
-                          class="w-6 h-6 rounded-full bg-gray-50"
+                          className="w-6 h-6 rounded-full bg-gray-50"
                           src={item.icon}
                         />
-                        <span class="ml-3 font-medium text-gray-600">
+                        <span className="ml-3 font-medium text-gray-600">
                           {item.name}
                         </span>
                       </div>
@@ -261,7 +323,7 @@ function Payment() {
               </div>
               {selectedPaymentMethod && (
                 <button
-                  class="text-white w-full mt-2 bg-amber-500 hover:bg-amber-600 font-medium rounded-lg text-sm px-5 py-3 focus:outline-none"
+                  className="text-white w-full mt-2 bg-amber-500 hover:bg-amber-600 font-medium rounded-lg text-sm px-5 py-3 focus:outline-none"
                   type="button"
                   onClick={() => {
                     handlePayment(selectedPaymentMethod);
@@ -282,13 +344,13 @@ function Payment() {
           size={"md"}
         >
           <Modal.Body>
-            <div class="p-0">
+            <div className="p-0">
               <div className="w-full flex items-center justify-center">
                 <div className="w-16 h-16 -mt-12 flex items-center justify-center bg-blue-50 rounded-full shadow-sm border-2 border-blue-100">
                   <MdDocumentScanner size={25} className="text-blue-400" />
                 </div>
               </div>
-              <p class="text-xl text-center mt-3  text-gray-800 font-medium dark:text-gray-400">
+              <p className="text-xl text-center mt-3  text-gray-800 font-medium dark:text-gray-400">
                 Scan QR Code
               </p>
               <p className="text-md mt-1 text-center text-gray-700">
@@ -297,7 +359,7 @@ function Payment() {
               <p className="text-center text-3xl font-bold mt-2 text-orange-500">
                 Rp {totalPrice ? totalPrice.toLocaleString() : ""}
               </p>
-              <div class=" flex flex-row gap-2">
+              <div className=" flex flex-row gap-2">
                 <LazyLoadImage
                   src="https://chart.googleapis.com/chart?cht=qr&chl=http%3A%2F%2Ftokopedia.com&chs=180x180&choe=UTF-8&chld=L|2"
                   effect="blur"
@@ -314,14 +376,20 @@ function Payment() {
               </div>
               <div>
                 <button
-                  class="text-white w-full mt-2 bg-amber-500 hover:bg-amber-600 font-medium rounded-lg text-sm px-5 py-3 focus:outline-none"
+                  className="text-white w-full mt-2 bg-amber-500 hover:bg-amber-600 font-medium rounded-lg text-sm px-5 py-3 focus:outline-none"
                   type="button"
                   onClick={() => {
                     handleOnCheckout();
                   }}
                 >
-                  I already paid Rp{" "}
-                  {totalPrice ? totalPrice.toLocaleString() : ""}
+                  {addTransactionLoading ? (
+                    <LoadingButton loadingMessage="Adding..." />
+                  ) : (
+                    <>
+                      I already paid Rp
+                      {totalPrice ? totalPrice.toLocaleString() : ""}
+                    </>
+                  )}
                 </button>
                 <p
                   onClick={() => {

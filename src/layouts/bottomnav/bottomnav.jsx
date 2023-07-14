@@ -20,8 +20,8 @@ const BottomNav = () => {
           <NavLink
             to="/"
             className={`${
-              path === "/" ? "bg-gray-100" : null
-            }  text-gray-500 flex flex-col items-center p-1 px-2 rounded-md hover:text-gray-500 hover:bg-gray-100 `}
+              path === "/" ? "border-orange-500 text-orange-500" : null
+            }  text-gray-500 flex flex-col items-center p-1 px-2  hover:text-orange-500  `}
           >
             <RiHomeSmile2Fill size={24} />
             <span className="text-[13px] font-semibold">home</span>
@@ -32,8 +32,8 @@ const BottomNav = () => {
           <NavLink
             to="/foods"
             className={`${
-              path === "/foods" ? "bg-gray-100" : null
-            }  text-gray-500 flex flex-col items-center p-1 px-2 rounded-md hover:text-gray-500 hover:bg-gray-100 `}
+              path === "/foods" ? "border-orange-500 text-orange-500" : null
+            }  text-gray-500 flex flex-col items-center p-1 px-2 rounded-md hover:text-orange-500 `}
           >
             <RiStore2Fill size={24} />
             <span className="text-[13px] font-semibold">foods</span>
@@ -44,8 +44,8 @@ const BottomNav = () => {
           <NavLink
             to="/cart"
             className={`${
-              path === "/cart" ? "bg-gray-100" : null
-            }  text-gray-500 flex flex-col items-center p-1 px-2 rounded-md hover:text-gray-500 hover:bg-gray-100 `}
+              path === "/cart" ? "border-orange-500 text-orange-500" : null
+            }  text-gray-500 flex flex-col items-center p-1 px-2 rounded-md hover:text-orange-500 `}
           >
             <RiShoppingCartFill size={24} />
             {product.cartData.length > 0 ? (
@@ -66,9 +66,9 @@ const BottomNav = () => {
               path === "/profile/stores" ||
               path === "/profile/wishlists" ||
               path === "/profile/history"
-                ? "bg-gray-100"
+                ? "border-orange-500 text-orange-500"
                 : null
-            }  text-gray-500 flex flex-col items-center p-1 px-2 rounded-md hover:text-gray-500 hover:bg-gray-100 `}
+            }  text-gray-500 flex flex-col items-center p-1 px-2 rounded-md hover:text-orange-500 `}
           >
             <RiUserFill size={24} />
             <span className="text-[13px] font-semibold">profile</span>

@@ -1,103 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink, Navigate, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 import axios from "axios";
 import { url } from "../../api/index";
 
 import MainLayout from "../../layouts/main/main";
 import Skeleton from "react-loading-skeleton";
-
-import ClossableNavbar from "../../layouts/navbar/clossable_navbar";
-import Modal from "../../components/modal";
-import HeadlessModal from "../../components/headlessModal";
-
-import successIllustration from "../../assets/images/illustration/success.png";
 import emptyIllustration from "../../assets/images/illustration/notfound.svg";
 import { HiOutlinePlus, HiOutlineMinus, HiTrash } from "react-icons/hi";
 
 import { toast } from "react-hot-toast";
 import { Checkbox } from "flowbite-react";
 
-import CheckoutBottomSheet from "../../components/partials/checkoutBottomSheet";
-
-const paymentOptions = [
-  {
-    id: "cash",
-    name: "Cash / QRIS",
-    icon: "https://firebasestorage.googleapis.com/v0/b/canteen-4d03f.appspot.com/o/bank%20logo%2Ficon.png?alt=media&token=36214437-19fc-4a87-89ab-16d796cad1c3",
-    popular: true,
-  },
-  {
-    id: "gopay",
-    name: "Gopay",
-    icon: "https://firebasestorage.googleapis.com/v0/b/canteen-4d03f.appspot.com/o/bank%20logo%2Ficon.png?alt=media&token=36214437-19fc-4a87-89ab-16d796cad1c3",
-    popular: false,
-  },
-  {
-    id: "shopee",
-    name: "Shopee pay",
-    icon: "https://firebasestorage.googleapis.com/v0/b/canteen-4d03f.appspot.com/o/bank%20logo%2Fshopeepay.png?alt=media&token=dc1a42a5-07db-4bf5-8a1b-b34b8e7151e6",
-    popular: false,
-  },
-  {
-    id: "ovo",
-    name: "OVO",
-    icon: "https://firebasestorage.googleapis.com/v0/b/canteen-4d03f.appspot.com/o/bank%20logo%2Funnamed.png?alt=media&token=a2b9df37-d3da-4b14-bbd5-52a4d2e75266",
-    popular: false,
-  },
-];
-const nominalOptions = [
-  {
-    title: "5K",
-    nominal: 5000,
-  },
-  {
-    title: "10K",
-    nominal: 10000,
-  },
-  {
-    title: "20K",
-    nominal: 20000,
-  },
-  {
-    title: "50K",
-    nominal: 50000,
-  },
-  {
-    title: "100K",
-    nominal: 100000,
-  },
-];
-
 function CartPage() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const product = useSelector((state) => state.product);
   const auth = useSelector((state) => state.auth);
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState();
-  const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-
-  const [paymentModal, setPaymentModal] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState();
-
-  const [successModal, setSuccessModal] = useState(false);
-  const [kembalian, setKembalian] = useState(0);
-
-  const [confirmationModal, setConfirmationModal] = useState(false);
-  const [nominal, setNominal] = useState("");
-  const [nominalKurang, setNominalKurang] = useState(false);
-
-  const [bottomSheetState, setBottomSheetState] = useState(false);
-
-  const onBottomSheetClose = () => {
-    setBottomSheetState(false);
-  };
-  const onBottomSheetOpen = () => {
-    setBottomSheetState(true);
-  };
 
   const renderSkeletonLoading = () => {
     return (
@@ -147,7 +68,7 @@ function CartPage() {
   };
   const deleteCart = (id) => {
     axios
-      .delete(`${url}/deleteCart/${id}`)
+      .delete(`${url}/deleteCart/${id}/${auth?.email}`)
       .then(function (res) {
         if (res.data.message === "success") {
           getCart();
@@ -196,8 +117,6 @@ function CartPage() {
     });
     setTotalPrice(total);
   };
-
-  const addTransaction = () => {};
 
   useEffect(() => {
     getCart();
