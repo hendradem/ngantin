@@ -9,9 +9,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { storage } from "../../../api/firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-
 import { NavLink } from "react-router-dom";
-
 import { toast } from "react-hot-toast";
 
 function ProductAdd() {
@@ -73,7 +71,7 @@ function ProductAdd() {
   const onSellItem = () => {
     const itemData = {
       title: productTitleInput.current.value,
-      code: productCodeInput.current.value,
+      product_code: productCodeInput.current.value,
       image: imgUrl,
       price: productPriceInput.current.value,
       stock: productStockInput.current.value,

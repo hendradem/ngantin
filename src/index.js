@@ -7,6 +7,8 @@ import { Toaster } from "react-hot-toast";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import "./styles/index.css";
+import "react-spring-bottom-sheet/dist/style.css";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, compose } from "redux";

@@ -1,30 +1,23 @@
-import React, { useEffect, useState, useRef } from "react";
-import ClossableNavbar from "../../../layouts/navbar/clossable_navbar";
-import HeadlessModal from "../../../components/headlessModal";
-import successIllustration from "../../../assets/images/illustration/success.png";
-
-import { url } from "../../../api/index";
-import { HiOutlineUpload } from "react-icons/hi";
-import { useSelector } from "react-redux";
-import { storage } from "../../../api/firebase";
+import React, { useState, useRef, Fragment, useEffect } from "react";
+import { Dialog } from "@headlessui/react";
 import axios from "axios";
-
-import { NavLink, useParams } from "react-router-dom";
+import { url } from "../../api/index";
+import { HiOutlineUpload, HiOutlineX } from "react-icons/hi";
+import { useSelector } from "react-redux";
+import { storage } from "../../api/firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-
 import { toast } from "react-hot-toast";
 
-function ProductEdit() {
+function ProductAddModal({ isOpen, onClose }) {
   const auth = useSelector((state) => state.auth);
-  const [product, setProduct] = useState([]);
   const [isDiscount, setIsDiscount] = useState(false);
-  const [successEditProduct, setSuccessEditProduct] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [successAddProduct, setSuccessAddProduct] = useState(false);
   const [productCategory, setProductCategory] = useState("");
+  const [IDStore, setIDStore] = useState("");
   const [productImage, setProductImage] = useState(
     "https://sdaisyiyah.sch.id/assets/post/default.png"
   );
-  const [isImageEdited, setIsImageEdited] = useState(false);
-
   const productTitleInput = useRef(null);
   const productCodeInput = useRef(null);
   const productPriceInput = useRef(null);
@@ -35,8 +28,6 @@ function ProductEdit() {
   const [progresspercent, setProgresspercent] = useState(0);
   const noImage =
     "https://firebasestorage.googleapis.com/v0/b/canteen-4d03f.appspot.com/o/assets%2Fno-image-post_struktur-organisasi.jpg?alt=media&token=472aae8e-c856-4fe1-9eaf-57ee5cb9a4c8";
-
-  let { id } = useParams();
 
   const onChangeDiscountToggle = (e) => {};
   const onSelectCategory = (e) => {
@@ -61,21 +52,20 @@ function ProductEdit() {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setImgUrl(downloadURL);
           toast.success("Image uploaded", {
             duration: 700,
-            position: "bottom-center",
+            position: "top-center",
           });
-          setImgUrl(downloadURL);
-          setIsImageEdited(true);
         });
       }
     );
   };
 
-  const onUpdateItem = () => {
+  const onSellItem = () => {
     const itemData = {
       title: productTitleInput.current.value,
-      code: productCodeInput.current.value,
+      product_code: productCodeInput.current.value,
       image: imgUrl,
       price: productPriceInput.current.value,
       stock: productStockInput.current.value,
@@ -83,43 +73,86 @@ function ProductEdit() {
       id_user: auth.email,
       discount: 0,
       status: 1,
+      id_store: IDStore,
     };
 
-    axios
-      .put(`${url}/editProduct/${id}`, itemData)
-      .then((res) => {
-        toast.success("Product updated", {
-          duration: 1200,
-          position: "bottom-center",
+    setIsLoading(true);
+
+    if (
+      !itemData.title ||
+      !itemData.product_code ||
+      !itemData.price ||
+      !itemData.stock ||
+      !itemData.category
+    ) {
+      toast.error("Fill all required field", { duration: 1200 });
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
+      axios
+        .post(`${url}/addProduct`, itemData)
+        .then((res) => {
+          toast.success("Product added", {
+            duration: 1200,
+            position: "top-center",
+          });
+          if (res.data.message) {
+            setIsLoading(false);
+            setTimeout(() => {
+              onClose();
+            }, 1000);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsLoading(false);
         });
-        if (res.data.message) setSuccessEditProduct(true);
+    }
+  };
+
+  const getStores = () => {
+    axios
+      .post(`${url}/getstore`, { user_email: auth.email })
+      .then(function (res) {
+        setIDStore(res.data?.message[0]?.id_store);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
   useEffect(() => {
-    axios
-      .post(`${url}/getProductForUpdate`, {
-        product_code: id,
-        id_user: auth.email,
-      })
-      .then((res) => {
-        setProduct(res.data.message);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [id]);
+    getStores();
+  }, [auth]);
 
   return (
-    <main>
-      <ClossableNavbar title={"Edit item"} from={"profile/product"} />
-      <div class="p-4 pt-[70px] pb-7">
-        {product.map((item) => {
-          return (
-            <div>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      as={Fragment}
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black bg-opacity-75"
+    >
+      <div
+        data-modal-backdrop="static"
+        aria-hidden="true"
+        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
+      >
+        <div class="relative w-full max-w-2xl max-h-full">
+          <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                Add your product
+              </h3>
+              <button
+                type="button"
+                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                data-modal-hide="staticModal"
+                onClick={onClose}
+              >
+                <HiOutlineX size={21} />
+              </button>
+            </div>
+            <div class="p-6 space-y-6">
               <div class="mb-4">
                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                   Product image
@@ -128,7 +161,7 @@ function ProductEdit() {
                   <div style={style.imageContainer} class="flex-none">
                     <img
                       class="rounded-md"
-                      src={`${isImageEdited ? imgUrl : item.image}`}
+                      src={`${imgUrl ? imgUrl : noImage}`}
                       style={style.imageThumbnail}
                     />
                   </div>
@@ -142,7 +175,7 @@ function ProductEdit() {
                           <HiOutlineUpload size={35} class="text-gray-400" />
                           <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
                             <span class="font-semibold">
-                              Click to edit product image
+                              Click to upload product image
                             </span>
                           </p>
                         </div>
@@ -167,7 +200,6 @@ function ProductEdit() {
                 <input
                   type="text"
                   ref={productTitleInput}
-                  defaultValue={item.title}
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="example: Rice bowl"
                   required
@@ -181,7 +213,6 @@ function ProductEdit() {
                 <input
                   type="text"
                   ref={productCodeInput}
-                  defaultValue={item.code}
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="example: RB-021"
                   required
@@ -195,7 +226,6 @@ function ProductEdit() {
                 <input
                   type="text"
                   ref={productPriceInput}
-                  defaultValue={item.price}
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="example: 25000"
                   required
@@ -209,7 +239,6 @@ function ProductEdit() {
                 <input
                   type="number"
                   ref={productStockInput}
-                  defaultValue={item.stock}
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                   placeholder="example: 20"
                   required
@@ -221,7 +250,7 @@ function ProductEdit() {
               >
                 <input
                   type="checkbox"
-                  defaultValue=""
+                  value=""
                   id="small-toggle"
                   class="sr-only peer"
                   onChange={(e) => {
@@ -256,50 +285,42 @@ function ProductEdit() {
                 }}
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               >
-                <option>Choose category</option>
-                <option value="1" selected={item.category === 1 ? true : false}>
-                  Food
-                </option>
-                <option value="2" selected={item.category === 2 ? true : false}>
-                  Drink
-                </option>
+                <option selected>Choose category</option>
+                <option value="1">Food</option>
+                <option value="2">Drink</option>
               </select>
-            </div>
-          );
-        })}
 
-        <button
-          onClick={onUpdateItem}
-          class="text-white w-full mt-7 bg-amber-500 hover:bg-amber-600 font-medium rounded-lg text-sm px-5 py-3 focus:outline-none"
-          type="button"
-        >
-          Update my item
-        </button>
-      </div>
-
-      {successEditProduct && (
-        <HeadlessModal setIsOpen={setSuccessEditProduct}>
-          <div class="p-6 flex flex-col items-center">
-            <img src={successIllustration} class="mb-2 w-[70%]" />
-            <p class="text-lg font-medium text-center text-gray-800">
-              Success edit product
-            </p>
-            <p class="text-sm font-normal text-gray-600">
-              Your product has been edited
-            </p>
-
-            <NavLink to="/profile/product" class="w-full">
               <button
-                class="text-white w-full mt-7 bg-gray-900 hover:bg-gray-800 font-medium rounded-lg text-sm px-5 py-3 focus:outline-none"
+                onClick={onSellItem}
+                class="text-white w-full mt-7 bg-amber-500 hover:bg-amber-600 font-medium rounded-lg text-sm px-5 py-3 focus:outline-none"
                 type="button"
               >
-                Back to profile
+                {isLoading && (
+                  <svg
+                    aria-hidden="true"
+                    role="status"
+                    class="inline w-4 h-4 mr-3 text-white animate-spin"
+                    viewBox="0 0 100 101"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                      fill="#E5E7EB"
+                    />
+                    <path
+                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                )}
+                {isLoading ? "Uploading..." : "Upload product"}
               </button>
-            </NavLink>
+            </div>
           </div>
-        </HeadlessModal>
-      )}
-    </main>
+        </div>
+      </div>
+    </Dialog>
   );
 }
 
@@ -315,4 +336,4 @@ const style = {
   },
 };
 
-export default ProductEdit;
+export default ProductAddModal;

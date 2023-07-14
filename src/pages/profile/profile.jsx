@@ -22,7 +22,7 @@ function ProfilePage() {
 
   return (
     <MainLayout navTitle="Profile">
-      <div class="pt-12 max-w-sm bg-white dark:bg-gray-800 dark:border-gray-700">
+      <div class="pt-12 max-w-md bg-white dark:bg-gray-800 dark:border-gray-700">
         <ProfileHeader />
         <main></main>
       </div>

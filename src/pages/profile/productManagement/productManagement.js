@@ -10,11 +10,14 @@ import ProfileHeader from "../../../components/profile/profileHeader";
 import axios from "axios";
 import { url } from "../../../api";
 
+import { RiStore2Fill } from "react-icons/ri";
+
 function ProductManagement() {
   const auth = useSelector((state) => state.auth);
   const email = auth.email;
 
   const [foods, setFoods] = useState([]);
+  const [stores, setStores] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sellerActivated, setSellerActivated] = useState(false);
 
@@ -29,21 +32,38 @@ function ProductManagement() {
       });
   };
 
-  useEffect(() => {
+  const getProducts = () => {
     axios
       .post(`${url}/product`, { email })
       .then(function (res) {
         setFoods(res.data.message);
-        setIsLoading(false); 
+        setIsLoading(false);
       })
       .catch((e) => {
         console.log(e);
       });
+  };
+
+  const getStores = () => {
+    axios
+      .post(`${url}/product`, { email })
+      .then(function (res) {
+        setFoods(res.data.message);
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  useEffect(() => {
+    getProducts();
+    getStores();
   }, []);
 
   return (
     <MainLayout navTitle="Profile">
-      <div class="pt-12 pb-12 max-w-sm bg-white">
+      <div class="pb-12 max-w-md bg-white">
         <ProfileHeader />
 
         <main>
@@ -53,9 +73,9 @@ function ProductManagement() {
               <NavLink to="/profile/product/add">
                 <button
                   type="button"
-                  class="py-2 px-3.5 text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
+                  class="py-2 px-3.5 flex items-center justify-center text-sm font-medium text-gray-700 focus:outline-none bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200"
                 >
-                  Add product
+                  <RiStore2Fill className="mr-2" /> Open your new store
                 </button>
               </NavLink>
             </div>
