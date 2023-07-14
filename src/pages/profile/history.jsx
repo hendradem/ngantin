@@ -7,12 +7,12 @@ import { url } from "../../api";
 import { RiStore2Fill } from "react-icons/ri";
 import StoreBottomSheet from "../../components/partials/storeBottomSheet";
 import Skeleton from "react-loading-skeleton";
-import { MdFullscreen } from "react-icons/md";
-import { NavLink } from "react-router-dom";
+import moment from "moment/moment";
 
-function Stores() {
+function History() {
   const auth = useSelector((state) => state.auth);
-  const [stores, setStores] = useState([]);
+  const dispatch = useDispatch();
+  const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
 
@@ -25,16 +25,24 @@ function Stores() {
   const renderSkeletonLoading = () => {
     return (
       <div className="mt-3">
-        <Skeleton height={55} className="w-full h-full m-0 border-radius-lg" />
+        <Skeleton
+          height={55}
+          className="w-full h-full m-0 border-radius-lg max-w-sm"
+        />
+        <Skeleton
+          height={55}
+          className="w-full h-full m-0 border-radius-lg max-w-sm"
+        />
       </div>
     );
   };
 
-  const fetchStoresData = () => {
+  const getTransactions = () => {
     axios
-      .post(`${url}/getstore`, { user_email: auth.email })
+      .post(`${url}/getUserTransactions`, { id_user: auth?.email })
       .then(function (res) {
-        setStores(res.data.message);
+        console.log(res);
+        setTransactions(res.data.message[0]);
         setIsLoading(false);
       })
       .catch((e) => {
@@ -44,7 +52,7 @@ function Stores() {
   };
 
   useEffect(() => {
-    fetchStoresData();
+    getTransactions();
   }, []);
 
   return (
@@ -52,41 +60,28 @@ function Stores() {
       <div className="max-w-md bg-white">
         <ProfileHeader />
         <main className="w-full p-4">
-          <div className="flex align-middle justify-between">
-            {stores.length >= 1 ? (
-              ""
-            ) : (
-              <button
-                onClick={() => setOpen(true)}
-                type="button"
-                className="py-2 px-3.5 flex items-center justify-center text-sm font-medium text-gray-700 focus:outline-none bg-white rounded-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-0 focus:ring-gray-200"
-              >
-                <RiStore2Fill className="mr-2" /> Create your new store
-              </button>
-            )}
-          </div>
           {isLoading ? (
             renderSkeletonLoading()
           ) : (
             <>
               <div className="mt-2">
                 <div className="w-full max-w-md bg-white dark:bg-gray-800 dark:border-gray-700">
-                  {stores.length >= 1 && (
+                  {transactions?.length >= 1 && (
                     <div className="flex items-center justify-between mb-1">
                       <h5 className="text-md font-semibold leading-none text-gray-700 dark:text-white">
-                        Your stores
+                        Your buying histories
                       </h5>
                     </div>
                   )}
-                  {stores.length >= 1 ? (
-                    stores.map((item) => {
+                  {transactions?.length >= 1 ? (
+                    transactions?.map((item) => {
                       return (
                         <div className="flow-root" key={item.id}>
                           <ul
                             role="list"
-                            className="divide-y divide-gray-200 dark:divide-gray-700 mt-2"
+                            className="divide-y divide-gray-100 mt-2"
                           >
-                            <li className="py-2 border border-gray-100 px-3 rounded-md">
+                            <li className="py-2 border border-gray-100 px-3 shadow-sm rounded-md">
                               <div className="flex items-center space-x-4">
                                 <div className="bg-orange-100 rounded-full p-3">
                                   <RiStore2Fill
@@ -96,21 +91,29 @@ function Stores() {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                    {item.store_name}
+                                    {item.title}
                                   </p>
                                   <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                                    {item.user_email}
+                                    <span>
+                                      {moment(item.createdAt).format(
+                                        "DD-MM-YYYY"
+                                      )}{" "}
+                                    </span>{" "}
+                                    <span className="mr-2 font-medium text-orange-400">
+                                      total: {item.price}
+                                    </span>
                                   </p>
                                 </div>
                                 <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                  <NavLink to="/profile/admin">
-                                    <button
-                                      type="button"
-                                      className="px-2 py-2 mr-2 text-sm font-medium text-center inline-flex items-center text-gray-700 bg-gray-100 rounded-full hover:bg-gray-100 focus:ring-0 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                    >
-                                      <MdFullscreen size={23} />
-                                    </button>
-                                  </NavLink>
+                                  {item.payment_status == 1 ? (
+                                    <span className="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                                      Success
+                                    </span>
+                                  ) : (
+                                    <span className="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
+                                      Pending
+                                    </span>
+                                  )}
                                 </div>
                               </div>
                             </li>
@@ -155,4 +158,4 @@ const style = {
   },
 };
 
-export default Stores;
+export default History;

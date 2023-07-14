@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { HiUserCircle } from "react-icons/hi";
+import {
+  HiUserCircle,
+  HiOutlineHeart,
+  HiOutlineInbox,
+  HiOutlineViewGrid,
+} from "react-icons/hi";
+
+import { MdOutlineHistory } from "react-icons/md";
+
 import { signOut } from "../../store/actions/authActions";
 import { NavLink, useLocation } from "react-router-dom";
 
@@ -39,7 +47,7 @@ function ProfileHeader() {
           </button>
         </div>
         <div className="border-b w-full flex justify-center border-gray-200 mt-2">
-          <ul className="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 ">
+          <ul className="flex flex-wrap gap-4 -mb-px text-sm font-medium text-center text-gray-500 ">
             <li>
               <NavLink to="/profile/overview">
                 <button
@@ -49,7 +57,33 @@ function ProfileHeader() {
                       : null
                   }  inline-flex p-4 rounded-t-lg `}
                 >
-                  Overview
+                  <HiOutlineViewGrid size={25} />
+                </button>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/profile/history">
+                <button
+                  className={`${
+                    path === "/profile/history"
+                      ? "text-orange-500 rounded-t-lg border-b-2 border-orange-500"
+                      : null
+                  } inline-flex p-4 rounded-t-lg `}
+                >
+                  <MdOutlineHistory size={25} />
+                </button>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/profile/wishlists">
+                <button
+                  className={`${
+                    path === "/profile/wishlists"
+                      ? "text-orange-500 rounded-t-lg border-b-2 border-orange-500"
+                      : null
+                  } inline-flex p-4 rounded-t-lg `}
+                >
+                  <HiOutlineHeart size={25} />
                 </button>
               </NavLink>
             </li>
@@ -62,14 +96,9 @@ function ProfileHeader() {
                       : null
                   } inline-flex p-4 rounded-t-lg `}
                 >
-                  Stores
+                  <HiOutlineInbox size={25} />
                 </button>
               </NavLink>
-            </li>
-            <li>
-              <button className="inline-flex p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 ">
-                Wishlists
-              </button>
             </li>
           </ul>
         </div>

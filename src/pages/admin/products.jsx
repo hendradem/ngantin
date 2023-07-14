@@ -32,12 +32,14 @@ const Products = () => {
     axios
       .delete(`${url}/product/${idProduct}/${iduser}`)
       .then((res) => {
-        setProducts(res.data.message);
-        toast("Product deleted", {
-          duration: 700,
-          position: "bottom-center",
-          icon: "✅",
-        });
+        if (res.data.message == "success") {
+          getProducts();
+          toast("Product deleted", {
+            duration: 700,
+            position: "bottom-center",
+            icon: "✅",
+          });
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -169,8 +171,8 @@ const Products = () => {
                     </button>
                     <button
                       onClick={() => {
-                        getProductByID(product.code);
-                        setSelectedProduct(product.code);
+                        getProductByID(product.product_code);
+                        setSelectedProduct(product.product_code);
                       }}
                       type="button"
                       className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"

@@ -6,7 +6,7 @@ const MainLayout = (props) => {
       <div className="h-full grid">
         <div className="flex justify-center w-full max-w-md h-full justify-self-center bg-white border-x-[1px] border-gray-100">
           <main class="container mx-auto">{props.children}</main>
-          <BottomNav />
+          {props.hideBottomNav ? "" : <BottomNav />}
         </div>
       </div>
     </div>
